@@ -15,7 +15,7 @@ Windows 实用脚本工具集。
 
 ### 安装右键菜单
 
-双击运行 `install_menu.bat`（自动请求管理员权限），选择「安装」即可。
+双击运行 `install_cbz_menu.py`（自动请求管理员权限），选择「安装」即可。
 
 安装后，右键点击任意文件夹即可看到「转换为CBZ」选项。
 
@@ -29,7 +29,7 @@ python folders_to_cbz.py <folder1> [folder2] [folder3] ...
 
 ### 卸载
 
-再次运行 `install_menu.bat`，选择「卸载」。
+再次运行 `install_cbz_menu.py`，选择「卸载」。
 
 ## 减少目录层级
 

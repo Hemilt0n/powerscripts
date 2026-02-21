@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-安装/卸载右键菜单项
+安装/卸载「转换为CBZ」右键菜单项
 需要以管理员权限运行
 """
 
-import os
 import sys
+import ctypes
 import winreg
 from pathlib import Path
 
@@ -13,6 +13,21 @@ from pathlib import Path
 SCRIPT_PATH = Path(__file__).parent / "folders_to_cbz.py"
 MENU_NAME = "转换为CBZ"
 REG_KEY_PATH = r"Directory\shell\FoldersToCBZ"
+
+
+def is_admin() -> bool:
+    """检查是否以管理员权限运行"""
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+
+def run_as_admin():
+    """请求管理员权限重新运行"""
+    ctypes.windll.shell32.ShellExecuteW(
+        None, "runas", sys.executable, " ".join([f'"{arg}"' for arg in sys.argv]), None, 1
+    )
 
 
 def get_python_path() -> str:
@@ -86,6 +101,12 @@ def main():
     print("  文件夹转CBZ - 右键菜单安装程序")
     print("=" * 50)
     print()
+
+    # 检查管理员权限
+    if not is_admin():
+        print("需要管理员权限，正在请求...")
+        run_as_admin()
+        sys.exit(0)
 
     if not SCRIPT_PATH.exists():
         print(f"✗ 错误: 找不到主脚本 {SCRIPT_PATH}")
