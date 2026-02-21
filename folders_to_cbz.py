@@ -28,7 +28,7 @@ def create_cbz_from_folder(folder_path: Path) -> bool:
         print(f"跳过: {folder_path} 不是文件夹")
         return False
 
-    cbz_path = folder_path.with_suffix('.cbz')
+    cbz_path = folder_path.parent / (folder_path.name + '.cbz')
 
     # 检查目标文件是否已存在
     if cbz_path.exists():
@@ -37,7 +37,7 @@ def create_cbz_from_folder(folder_path: Path) -> bool:
 
     try:
         # 创建ZIP文件（使用临时扩展名）
-        zip_path = folder_path.with_suffix('.zip')
+        zip_path = folder_path.parent / (folder_path.name + '.zip')
 
         print(f"正在压缩: {folder_path.name}")
 
