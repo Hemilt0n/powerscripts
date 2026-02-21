@@ -1,6 +1,9 @@
 # Spec workflow
 .spec-workflow/
 
+# Claude
+CLAUDE.md
+
 # Python
 __pycache__/
 *.pyc
