@@ -60,6 +60,37 @@ python flatten_folder.py <folder1> [folder2] [folder3] ...
 
 再次运行 `install_flatten_menu.py`，选择「卸载」。
 
+## MPV 批量播放
+
+使用 MPV 播放器批量播放文件夹内的所有文件。支持视频、音频等多种格式。
+
+### 功能
+
+- 批量播放文件夹内所有支持的文件格式
+- 支持两种右键菜单：文件夹右键 + 文件夹内空白处右键
+- 显示 MPV 原生输出信息和控制界面
+- 自动检测 MPV 是否已安装
+
+### 安装右键菜单
+
+双击运行 `install_mpv_menu.py`（自动请求管理员权限），选择「安装」即可。
+
+安装后，右键点击任意文件夹或文件夹内空白处，即可看到「使用MPV批量播放」选项。
+
+### 手动使用
+
+```bash
+python mpv_batch_play.py [folder_path]
+```
+
+如果不提供 `folder_path` 参数，则播放当前目录下的所有文件。
+
+或将文件夹拖放到 `mpv_batch_play.py` 上。
+
+### 卸载
+
+再次运行 `install_mpv_menu.py`，选择「卸载」。
+
 ## 依赖
 
 - Python 3.6+
