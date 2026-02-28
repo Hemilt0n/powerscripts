@@ -12,7 +12,10 @@ from pathlib import Path
 
 SCRIPT_PATH = Path(__file__).parent / "folders_to_cbz.py"
 MENU_NAME = "转换为CBZ"
-REG_KEY_PATH = r"Directory\shell\FoldersToCBZ"
+
+# 注册表路径
+REG_KEY_DIR = r"Directory\shell\FoldersToCBZ"  # 文件夹右键菜单
+REG_KEY_ZIP = r"SystemFileAssociations\.zip\shell\FoldersToCBZ"  # ZIP文件右键菜单
 
 
 def is_admin() -> bool:
@@ -36,27 +39,40 @@ def get_python_path() -> str:
 
 
 def install_context_menu():
-    """安装右键菜单"""
+    """安装右键菜单（文件夹和ZIP文件）"""
     python_path = get_python_path()
     script_path = str(SCRIPT_PATH.resolve())
 
     try:
-        # 创建主菜单项
-        key = winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, REG_KEY_PATH)
+        # 1. 安装文件夹右键菜单
+        key = winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, REG_KEY_DIR)
         winreg.SetValue(key, "", winreg.REG_SZ, MENU_NAME)
         winreg.SetValueEx(key, "Icon", 0, winreg.REG_SZ, "shell32.dll,45")
         winreg.CloseKey(key)
 
-        # 创建命令
-        command_key = winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, REG_KEY_PATH + r"\command")
+        command_key = winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, REG_KEY_DIR + r"\command")
         command = f'"{python_path}" "{script_path}" "%V"'
         winreg.SetValue(command_key, "", winreg.REG_SZ, command)
         winreg.CloseKey(command_key)
 
-        print("✓ 右键菜单已安装")
-        print(f"  Python路径: {python_path}")
+        print("✓ 文件夹右键菜单已安装")
+
+        # 2. 安装ZIP文件右键菜单
+        key = winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, REG_KEY_ZIP)
+        winreg.SetValue(key, "", winreg.REG_SZ, MENU_NAME)
+        winreg.SetValueEx(key, "Icon", 0, winreg.REG_SZ, "shell32.dll,45")
+        winreg.CloseKey(key)
+
+        command_key = winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, REG_KEY_ZIP + r"\command")
+        command = f'"{python_path}" "{script_path}" "%1"'
+        winreg.SetValue(command_key, "", winreg.REG_SZ, command)
+        winreg.CloseKey(command_key)
+
+        print("✓ ZIP文件右键菜单已安装")
+
+        print(f"\n  Python路径: {python_path}")
         print(f"  脚本路径: {script_path}")
-        print("\n现在右键点击任意文件夹，即可看到「转换为CBZ」选项")
+        print("\n现在右键点击文件夹或ZIP文件，即可看到「转换为CBZ」选项")
 
     except PermissionError:
         print("✗ 错误: 需要管理员权限")
@@ -70,21 +86,29 @@ def install_context_menu():
 
 
 def uninstall_context_menu():
-    """卸载右键菜单"""
+    """卸载右键菜单（文件夹和ZIP文件）"""
     try:
-        # 删除命令子键
+        # 删除文件夹右键菜单
         try:
-            winreg.DeleteKey(winreg.HKEY_CLASSES_ROOT, REG_KEY_PATH + r"\command")
+            winreg.DeleteKey(winreg.HKEY_CLASSES_ROOT, REG_KEY_DIR + r"\command")
         except FileNotFoundError:
             pass
-
-        # 删除主键
         try:
-            winreg.DeleteKey(winreg.HKEY_CLASSES_ROOT, REG_KEY_PATH)
+            winreg.DeleteKey(winreg.HKEY_CLASSES_ROOT, REG_KEY_DIR)
         except FileNotFoundError:
             pass
+        print("✓ 文件夹右键菜单已卸载")
 
-        print("✓ 右键菜单已卸载")
+        # 删除ZIP文件右键菜单
+        try:
+            winreg.DeleteKey(winreg.HKEY_CLASSES_ROOT, REG_KEY_ZIP + r"\command")
+        except FileNotFoundError:
+            pass
+        try:
+            winreg.DeleteKey(winreg.HKEY_CLASSES_ROOT, REG_KEY_ZIP)
+        except FileNotFoundError:
+            pass
+        print("✓ ZIP文件右键菜单已卸载")
 
     except PermissionError:
         print("✗ 错误: 需要管理员权限")
@@ -98,7 +122,7 @@ def uninstall_context_menu():
 
 def main():
     print("=" * 50)
-    print("  文件夹转CBZ - 右键菜单安装程序")
+    print("  文件夹/ZIP转CBZ - 右键菜单安装程序")
     print("=" * 50)
     print()
 

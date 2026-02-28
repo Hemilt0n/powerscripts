@@ -4,7 +4,11 @@
 CBZ本质上是ZIP格式，仅修改扩展名
 
 用法：
-    python folders_to_cbz.py <folder1> [folder2] [folder3] ...
+    python folders_to_cbz.py <folder_or_zip1> [folder_or_zip2] ...
+
+支持：
+    - 文件夹：压缩为CBZ并删除原文件夹
+    - ZIP文件：直接重命名为CBZ
 """
 
 import os
@@ -12,6 +16,40 @@ import sys
 import shutil
 import zipfile
 from pathlib import Path
+
+
+def rename_zip_to_cbz(zip_path: Path) -> bool:
+    """
+    将ZIP文件重命名为CBZ文件
+
+    Args:
+        zip_path: 要重命名的ZIP文件路径
+
+    Returns:
+        bool: 成功返回True，失败返回False
+    """
+    if not zip_path.is_file():
+        print(f"跳过: {zip_path} 不是文件")
+        return False
+
+    if zip_path.suffix.lower() != '.zip':
+        print(f"跳过: {zip_path} 不是ZIP文件")
+        return False
+
+    cbz_path = zip_path.with_suffix('.cbz')
+
+    # 检查目标文件是否已存在
+    if cbz_path.exists():
+        print(f"跳过: {cbz_path} 已存在")
+        return False
+
+    try:
+        zip_path.rename(cbz_path)
+        print(f"重命名: {zip_path.name} -> {cbz_path.name}")
+        return True
+    except Exception as e:
+        print(f"错误: 重命名 {zip_path.name} 时失败 - {e}")
+        return False
 
 
 def create_cbz_from_folder(folder_path: Path) -> bool:
@@ -68,20 +106,30 @@ def create_cbz_from_folder(folder_path: Path) -> bool:
 
 def main():
     if len(sys.argv) < 2:
-        print("用法: python folders_to_cbz.py <folder1> [folder2] ...")
-        print("请拖放文件夹到此脚本上，或通过右键菜单调用")
+        print("用法: python folders_to_cbz.py <folder_or_zip1> [folder_or_zip2] ...")
+        print("支持: 文件夹（压缩为CBZ）或 ZIP文件（重命名为CBZ）")
+        print("请拖放文件夹或ZIP文件到此脚本上，或通过右键菜单调用")
         input("按回车键退出...")
         sys.exit(1)
 
-    folders = [Path(arg) for arg in sys.argv[1:]]
+    paths = [Path(arg) for arg in sys.argv[1:]]
 
     success_count = 0
     fail_count = 0
 
-    for folder in folders:
-        if create_cbz_from_folder(folder):
-            success_count += 1
+    for path in paths:
+        if path.is_dir():
+            if create_cbz_from_folder(path):
+                success_count += 1
+            else:
+                fail_count += 1
+        elif path.is_file() and path.suffix.lower() == '.zip':
+            if rename_zip_to_cbz(path):
+                success_count += 1
+            else:
+                fail_count += 1
         else:
+            print(f"跳过: {path} 不是文件夹或ZIP文件")
             fail_count += 1
 
     print(f"\n处理完成: 成功 {success_count}, 失败 {fail_count}")
