@@ -2,30 +2,30 @@
 
 Windows 实用脚本工具集。
 
-## 文件夹转 CBZ
+## 文件夹/ZIP 转 CBZ
 
-将文件夹批量转换为 CBZ 格式（漫画书归档格式）。
+将文件夹或 ZIP 文件批量转换为 CBZ 格式（漫画书归档格式）。
 
 ### 功能
 
-- 批量将文件夹压缩为 CBZ 文件
+- 文件夹：压缩为 CBZ 文件并删除源文件夹
+- ZIP 文件：直接重命名为 CBZ（CBZ 本质就是 ZIP）
 - 保持原有目录结构
-- 自动删除已转换的源文件夹
-- 支持 Windows 右键菜单集成
+- 支持 Windows 右键菜单集成（文件夹 + ZIP 文件）
 
 ### 安装右键菜单
 
 双击运行 `install_cbz_menu.py`（自动请求管理员权限），选择「安装」即可。
 
-安装后，右键点击任意文件夹即可看到「转换为CBZ」选项。
+安装后，右键点击文件夹或 ZIP 文件，即可看到「转换为CBZ」选项。
 
 ### 手动使用
 
 ```bash
-python folders_to_cbz.py <folder1> [folder2] [folder3] ...
+python folders_to_cbz.py <folder_or_zip1> [folder_or_zip2] ...
 ```
 
-或将文件夹拖放到 `folders_to_cbz.py` 上。
+或将文件夹/ZIP 文件拖放到 `folders_to_cbz.py` 上。
 
 ### 卸载
 
