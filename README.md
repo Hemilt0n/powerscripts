@@ -91,6 +91,46 @@ python mpv_batch_play.py [folder_path]
 
 再次运行 `install_mpv_menu.py`，选择「卸载」。
 
+## 视频截取
+
+使用 FFmpeg 截取视频片段，支持指定起始和结束时间。
+
+### 功能
+
+- 支持秒数或时间戳格式输入（如 `90` 或 `00:01:30`）
+- 交互模式引导输入时间参数
+- 自动获取视频时长
+- 输出文件自动命名（源文件名+截取区间）
+- 优先使用流复制，失败时自动重新编码
+- 截取后询问是否转换为 MP4 格式（方便分享至社交平台）
+- 实时显示 FFmpeg 命令和输出
+- 支持常见视频格式右键菜单
+
+### 安装右键菜单
+
+双击运行 `install_video_cut_menu.py`（自动请求管理员权限），选择「安装」即可。
+
+安装后，右键点击视频文件即可看到「截取视频片段」选项。
+
+支持格式：mp4, mkv, avi, mov, wmv, flv, webm, m4v, mpg, mpeg
+
+### 手动使用
+
+```bash
+# 交互模式（引导输入时间）
+python video_cut.py video.mp4
+
+# 命令行模式
+python video_cut.py video.mp4 30 90           # 秒数
+python video_cut.py video.mp4 00:00:30 00:01:30  # 时间戳
+```
+
+或将视频文件拖放到 `video_cut.py` 上，进入交互模式。
+
+### 卸载
+
+再次运行 `install_video_cut_menu.py`，选择「卸载」。
+
 ## 依赖
 
 - Python 3.6+
